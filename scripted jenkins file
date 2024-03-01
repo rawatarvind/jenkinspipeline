@@ -1,1 +1,15 @@
-
+node 
+{
+stage ("Build") { 
+    date 
+    echo " creating a build project"
+}
+stage ("Test") {
+   date
+   echo " create a testing project"
+}
+stage ("Deploy") {
+    date
+    echo " create a deployment project"
+}
+}
