@@ -1,0 +1,2 @@
+# jenkinspipeline
+declarative scripted 
