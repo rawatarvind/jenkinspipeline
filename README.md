@@ -42,4 +42,7 @@ we can create jenkins pipelines in 2 ways
 4. also a node block is a key part of scripted pipeline syntax.
 # Stage:-
 A stage block defines a conceptually destinct subset of tasks performed through the entire pipeline (e.g "build" "test" and "Deploy" "stage"), which is used by many plugins to visualize or present jenkins pipeline status/process.
-for example to execute the shell command make use the sh step: sh make , when a plugin extends the pipeline DSL that pipelines means the plugins has implimeneted a new step 
+
+# Step
+A single task fundamentally a step tells jenkins what to do at a particular point in time ( or "step" in the process )
+for example to execute the shell command make use the sh step: sh make : when a plugin  extends the pipeline DSL, that typically means the plugin has implemented a new step.
