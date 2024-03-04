@@ -1,15 +1,19 @@
-node 
-{
-stage ("Build") { 
-    date 
-    echo " creating a build project"
-}
-stage ("Test") {
-   date
-   echo " create a testing project"
-}
-stage ("Deploy") {
-    date
-    echo " create a deployment project"
-}
+node {
+    stage("Build") {
+        def currentDate = new Date()
+        echo "Building at: ${currentDate}"
+        // Additional build steps...
+    }
+
+    stage("Test") {
+        def currentDate = new Date()
+        echo "Testing at: ${currentDate}"
+        // Additional testing steps...
+    }
+
+    stage("Deploy") {
+        def currentDate = new Date()
+        echo "Deploying at: ${currentDate}"
+        // Additional deployment steps...
+    }
 }
