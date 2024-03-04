@@ -1,7 +1,7 @@
 # what is Pipeline ?
 In jenkins, a pipeline is a group of events or jobs which are interlinked with one another in a sequence.
 
-Build--->Deploy---->Test--->Release
+Build--->Test---->Deploy--->Release
 
 # how to Set up Build Pipeline in Jenkins
 
@@ -46,3 +46,52 @@ A stage block defines a conceptually destinct subset of tasks performed through 
 # Step
 A single task fundamentally a step tells jenkins what to do at a particular point in time ( or "step" in the process )
 for example to execute the shell command make use the sh step: sh make : when a plugin  extends the pipeline DSL, that typically means the plugin has implemented a new step.
+
+# "Scripted Pipeline"
+jenkins file (scripted pipeline)
+node { 1.
+    stage ('Build')  { 2.
+       // 3.
+       }
+       stage ('Test') { 4.
+         // 5.
+         }
+         stage ('Deploy') { 6.
+           // 7.
+           }
+    }
+
+  1. Execute this pipeline or any of its stages on any available agent, defines the "Build" stage.
+     Stage blocks are optional in scripted pipeline syntax.however implementing
+  2. Stage blocks in a scripted pipeline provides clearer visualization of each stage's subset of tasks steps in the jenkins UI
+  3. Perform some steps related to the "build" stage.
+  4. Defines the "Test" stage.
+  5. Perform some steps related to the "Test" stage.
+  6. Defines the "Deploy" stage
+  7. Perform some steps related to "Deploy" stage.
+
+# " Declarative Pipeline "
+jenkinsfile ( Declarative Pipeline )
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
+}
+
