@@ -1,0 +1,12 @@
+pipeline {
+    agent {
+        label "nodejs-agent"
+    }
+    stages {
+        stage('Check version') {
+            steps {
+                sh 'node -v'
+            }
+        }
+    }
+}
