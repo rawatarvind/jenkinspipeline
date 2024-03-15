@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label "nodejs-node"
+        label "nodejs-agent"
     }
     stages {
         stage('Check version') {
