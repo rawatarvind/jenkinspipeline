@@ -10,7 +10,7 @@
 
               ls -ltrh
 
-              echo "hello how r u ?" > test.txt
+              echo "hello how r u " > test.txt
 
               cat test.txt'''
                 }
@@ -24,12 +24,7 @@
                 
             }
 
-        stage("c"){
-                steps{
-                    echo "========executing C========"
-                }
-                
-            }
+        
         }
         post{
             always{
