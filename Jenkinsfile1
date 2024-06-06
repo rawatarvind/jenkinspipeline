@@ -19,8 +19,8 @@
 
         stage("append file or text "){
                 steps{
-                   sh '
-                    echo "i am fine" >> test.txt '
+                   sh 
+                    echo "i am fine" >> test.txt 
                 }
                 
             }
