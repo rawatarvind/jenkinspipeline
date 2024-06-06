@@ -1,0 +1,46 @@
+    pipeline{
+        agent{
+            label "node"
+        }
+        stages{
+            stage("Run command in shell "){
+                steps{
+                    sh '''pwd
+              ls 
+              touch test.txt 
+
+              ls -ltrh
+
+              echo "hello how r u ?" > test.txt
+
+              cat test.txt'''
+                }
+                
+            }
+
+        stage("echo command"){
+                steps{
+                    echo "i am fine" >> test.txt
+                }
+                
+            }
+
+        stage("c"){
+                steps{
+                    echo "========executing C========"
+                }
+                
+            }
+        }
+        post{
+            always{
+                echo "========always========"
+            }
+            success{
+                echo "========pipeline executed successfully ========"
+            }
+            failure{
+                echo "========pipeline execution failed========"
+            }
+        }
+    }
