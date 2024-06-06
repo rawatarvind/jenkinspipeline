@@ -17,7 +17,7 @@
                 
             }
 
-        stage("echo command"){
+        stage("append file or text "){
                 steps{
                     echo "i am fine" >> test.txt
                 }
