@@ -22,8 +22,8 @@ pipeline {
         
         stage('ENV') {
             steps {
-                sh 'echo "this is id ${BUILD_ID}'
-                sh 'echo "this is URL" ${BUILD_URL}'
+                sh 'echo "this is id ${BUILD_ID}"'
+                sh 'echo "this is URL" ${BUILD_URL}"'
             }
         }
     }
