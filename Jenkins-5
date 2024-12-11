@@ -1,0 +1,55 @@
+pipeline {
+   agent any
+   environment {
+        imageName = "nginx:v2"
+        registryCredentials = "nexus"
+        registry = "http://127.0.0.1:8086"
+        dockerImage = 'nginx:v2'
+        CONTAINER_NAME = 'webserver'
+   }
+   stages {
+    stage('Code checkout') {
+        steps {
+            checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/rawatarvind/DockerFiles.git']])
+        }
+
+    }
+    stage('Build image') {
+        steps {
+            script {
+                docker.build("${dockerimage}", "--file nginx/Dockerfile .")
+            }
+        }
+    
+    }
+    stage('Upload to nexux') {
+        steps {
+            script {
+                 docker.withRegistry("${registry}", "${registryCredentials}") {
+                     docker.image("${dockerimage}").push()
+                 }
+            }
+        }
+    }
+    stage("Stop and Remove the container") {
+        steps {
+            script {
+                sh """
+                docker stop  ${CONTAINER_NAME} || true
+                docker rm  ${CONTAINER_NAME} || true
+                """
+            }
+        }
+    }
+    stage("Run container") {
+        steps {
+            script {
+                 sh "docker run -d -p 9090:81 --name ${CONTAINER_NAME} 127.0.0.1:8086/${imageName}"
+            }
+        }
+    }
+   
+   }
+   
+}
+

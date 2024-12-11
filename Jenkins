@@ -1,0 +1,73 @@
+pipeline { 
+    agent any
+    tools { 
+        jdk "jdk"
+        maven "maven"
+    }
+    environment { 
+       SCANNER_HOME = tool 'soner-scanner'
+    }
+    stages {
+        stage('Git Checkout') {
+            steps {
+                 git branch: 'main', url: 'https://github.com/ougabriel/full-stack-blogging-app.git'
+            }
+        }
+        stage('Compile') {
+            steps {
+                sh "mvn compile"
+            }
+        }
+        stage('Trivy FS') {
+            steps {
+                sh "trivy fs --format table  -o fs.html"
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps{
+                sh withSonarQubeEnv('sonarqubeServer') {
+                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Bloggin-app -Dsonar.projectKey=Bloggin-app -Dsonar.java.binaries=target''' 
+                }
+            }   
+        }
+        stage('Build') {
+            steps {
+                sh "mvn package"
+            }
+        }
+        stage('Public Artifacts') {
+            steps {
+                 withMaven(globalMavenSettingsConfig: 'maven-settings', jdk: 'jdk', maven: 'maven', mavenSettingsConfig: '', traceability: true) {
+                    sh "mvn deploy"
+                 } 
+            }
+        }
+        stage('Docker Build & Tag') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'dockerhub-cred', url: 'https://index.docker.io/v1/') {
+                        sh "docker build -t ashurawat/ashu-blogging-app ."
+                    }
+
+                }
+
+            }
+
+        }
+        stage('Trivy image Scan') {
+            steps {
+                sh "trivy image --format table -o  image.html ahurawat/ashu-blogging-app:latest" 
+            }
+        }
+        stage('Docker image push') {
+            steps {
+                script{
+                withDockerRegistry(credentialsId: 'dockerhub-cred', url: 'https://index.docker.io/v1/') {
+                    sh "docker push ashurawat/ashu-blogging-app"
+                }
+            }
+        }
+
+      }
+   } 
+}
