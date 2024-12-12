@@ -1,0 +1,55 @@
+pipeline {
+   agent any
+   environment {
+        imageName = "monitoring_app:latest"
+        registryCredentials = "nexus"
+        registry = "http://127.0.0.1:8086"
+        dockerImage = 'monitoring_app:latest'
+        CONTAINER_NAME = 'monitor_sys'
+   }
+   stages {
+    stage('Code checkout') {
+        steps {
+            checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/rawatarvind/automation.git']])
+        }
+
+    }
+    stage('Build image') {
+        steps {
+            script {
+                docker.build("${dockerImage}", "--file Dockerfile .")
+            }
+        }
+    
+    }
+    stage('Upload to nexux') {
+        steps {
+            script {
+                 docker.withRegistry("${registry}", "${registryCredentials}") {
+                     docker.image("${dockerimage}").push()
+                 }
+            }
+        }
+    }
+    stage("Stop and Remove the container") {
+        steps {
+            script {
+                sh """
+                docker stop  ${CONTAINER_NAME} || true
+                docker rm  ${CONTAINER_NAME} || true
+                """
+            }
+        }
+    }
+    stage("Run container") {
+        steps {
+            script {
+                 sh "docker run -d -p 5000:5000 --name ${CONTAINER_NAME} 127.0.0.1:8086/${imageName}"
+            }
+        }
+    }
+   
+   }
+   
+}
+

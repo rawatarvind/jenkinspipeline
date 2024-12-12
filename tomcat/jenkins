@@ -1,0 +1,55 @@
+pipeline {
+   agent any
+   environment {
+        imageName = "tomcat:latest"
+        registryCredentials = "nexus"
+        registry = "http://127.0.0.1:8086"
+        dockerImage = 'tomcat:latest'
+        CONTAINER_NAME = 'tomcatserver'
+   }
+   stages {
+    stage('Code checkout') {
+        steps {
+            checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/rawatarvind/Docker-and-container.git']])
+        }
+
+    }
+    stage('Build image') {
+        steps {
+            script {
+                docker.build("${dockerImage}", "--file Dockerfile .")
+            }
+        }
+    
+    }
+    stage('Upload to nexux') {
+        steps {
+            script {
+                 docker.withRegistry("${registry}", "${registryCredentials}") {
+                     docker.image("${dockerimage}").push()
+                 }
+            }
+        }
+    }
+    stage("Stop and Remove the container") {
+        steps {
+            script {
+                sh """
+                docker stop  ${CONTAINER_NAME} || true
+                docker rm  ${CONTAINER_NAME} || true
+                """
+            }
+        }
+    }
+    stage("Run container") {
+        steps {
+            script {
+                 sh "docker run -d -p 32412:8080 --name ${CONTAINER_NAME} 127.0.0.1:8086/${imageName}"
+            }
+        }
+    }
+   
+   }
+   
+}
+
